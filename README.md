@@ -1,17 +1,11 @@
 # Daily Customer Revenue Pipeline
 
-This pipeline transforms raw customer transactions into a daily aggregated customer revenue model.
+This pipeline transforms raw customer transaction events into a daily aggregated customer revenue model.
 
-## Metadata Context
-- **Source Dataset**: `raw.customer_transactions` (Upstream: `raw.payments`)
-- **Target Dataset**: `analytics.customer_revenue`
-- **Owner**: `data-platform`
-- **Domain**: Finance
-- **Tags**: PII, Financial
+## Lineage
+- **Upstream**: `raw.payments` -> `raw.customer_transactions`
+- **Downstream**: `analytics.customer_revenue`
 
-## Security & Governance (PII)
-- `customer_id` is classified as PII. To protect customer privacy while maintaining the ability to aggregate daily revenue per customer, we apply an MD5 hash to `customer_id` in the staging layer (`stg_customer_transactions`).
-
-## Financial Validation
-- Added tests to ensure transaction amounts are non-negative.
-- Aggregations are grouped by currency to prevent mixing different currencies.
+## Governance & Security
+- **PII Protection**: `customer_id` is hashed using MD5 in the staging layer to protect customer identity while allowing daily aggregation.
+- **Financial Validation**: Added tests to ensure `amount` and `daily_revenue` are non-null and non-negative.

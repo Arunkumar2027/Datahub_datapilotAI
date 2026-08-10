@@ -2,37 +2,52 @@ version: 2
 
 sources:
   - name: raw
+    database: raw
     tables:
       - name: customer_transactions
+        description: "Raw customer transaction events"
+        columns:
+          - name: transaction_id
+            tests:
+              - unique
+              - not_null
+          - name: customer_id
+            tests:
+              - not_null
+          - name: amount
+            tests:
+              - not_null
+          - name: currency
+            tests:
+              - not_null
 
 models:
   - name: stg_customer_transactions
-    description: "Staged customer transactions with masked PII and basic financial validation."
+    description: "Staged customer transactions with PII masked"
     columns:
       - name: transaction_id
         tests:
           - unique
           - not_null
-      - name: masked_customer_id
+      - name: customer_id
+        description: "MD5 hashed customer identifier to protect PII"
         tests:
           - not_null
       - name: amount
         tests:
           - not_null
-      - name: currency
-        tests:
-          - not_null
 
   - name: customer_revenue
-    description: "Daily aggregated revenue per customer and currency."
+    description: "Daily aggregated customer revenue"
     columns:
-      - name: transaction_date
+      - name: revenue_id
+        tests:
+          - unique
+          - not_null
+      - name: revenue_date
         tests:
           - not_null
-      - name: masked_customer_id
-        tests:
-          - not_null
-      - name: currency
+      - name: customer_id
         tests:
           - not_null
       - name: daily_revenue

@@ -1,16 +1,13 @@
 # Customer Revenue Pipeline
 
-## Overview
-This pipeline transforms raw customer transaction data from `raw.customer_transactions` into a daily customer revenue model (`analytics.customer_revenue`).
+This pipeline transforms raw customer transaction data into daily aggregated revenue metrics.
 
-## Governance & Security
-- **PII Protection**: The `customer_id` column is masked using an MD5 hash in the staging layer (`stg_customer_transactions`) to comply with PII data governance rules.
-- **Financial Validation**: A data quality test (`assert_positive_amounts`) ensures that no negative transaction amounts are processed.
-
-## Lineage
-- **Upstream**: `raw.payments` -> `raw.customer_transactions`
-- **Downstream**: `analytics.customer_revenue`
-
-## Ownership
+## Metadata & Governance
 - **Owner**: data-platform
 - **Domain**: Finance
+- **Upstream**: `raw.payments`
+- **Downstream**: `analytics.customer_revenue`
+
+## Security & Compliance
+- **PII Protection**: `customer_id` is hashed using SHA256 in the staging layer (`stg_customer_transactions`) to ensure compliance with privacy standards while maintaining aggregation capabilities.
+- **Financial Validation**: Transactions with negative amounts are filtered out in the staging layer. A custom dbt test (`assert_positive_amounts`) ensures no negative values pass through.

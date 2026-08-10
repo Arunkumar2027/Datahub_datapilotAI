@@ -1,0 +1,40 @@
+version: 2
+
+sources:
+  - name: raw
+    tables:
+      - name: customer_transactions
+
+models:
+  - name: stg_customer_transactions
+    description: "Staged customer transactions with masked PII and basic financial validation."
+    columns:
+      - name: transaction_id
+        tests:
+          - unique
+          - not_null
+      - name: masked_customer_id
+        tests:
+          - not_null
+      - name: amount
+        tests:
+          - not_null
+      - name: currency
+        tests:
+          - not_null
+
+  - name: customer_revenue
+    description: "Daily aggregated revenue per customer and currency."
+    columns:
+      - name: transaction_date
+        tests:
+          - not_null
+      - name: masked_customer_id
+        tests:
+          - not_null
+      - name: currency
+        tests:
+          - not_null
+      - name: daily_revenue
+        tests:
+          - not_null

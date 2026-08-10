@@ -15,24 +15,24 @@ default_args = {
 with DAG(
     'customer_revenue_pipeline',
     default_args=default_args,
-    description='Daily customer revenue transformation pipeline',
+    description='Daily customer revenue aggregation pipeline',
     schedule_interval='@daily',
     catchup=False,
 ) as dag:
 
-    dbt_run_staging = BashOperator(
-        task_id='dbt_run_staging',
+    run_stg_transactions = BashOperator(
+        task_id='run_stg_transactions',
         bash_command='dbt run --select stg_customer_transactions',
     )
 
-    dbt_run_marts = BashOperator(
-        task_id='dbt_run_marts',
+    run_customer_revenue = BashOperator(
+        task_id='run_customer_revenue',
         bash_command='dbt run --select customer_revenue',
     )
 
-    dbt_test = BashOperator(
-        task_id='dbt_test',
-        bash_command='dbt test',
+    test_customer_revenue = BashOperator(
+        task_id='test_customer_revenue',
+        bash_command='dbt test --select customer_revenue',
     )
 
-    dbt_run_staging >> dbt_run_marts >> dbt_test
+    run_stg_transactions >> run_customer_revenue >> test_customer_revenue

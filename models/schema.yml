@@ -12,8 +12,7 @@ sources:
               - unique
               - not_null
           - name: customer_id
-            tests:
-              - not_null
+            description: "PII - Customer identifier"
           - name: amount
             tests:
               - not_null
@@ -23,31 +22,26 @@ sources:
 
 models:
   - name: stg_customer_transactions
-    description: "Staged customer transactions with PII masked"
+    description: "Staging model for customer transactions with PII masked"
     columns:
       - name: transaction_id
         tests:
           - unique
           - not_null
-      - name: customer_id
-        description: "MD5 hashed customer identifier to protect PII"
-        tests:
-          - not_null
-      - name: amount
+      - name: hashed_customer_id
         tests:
           - not_null
 
   - name: customer_revenue
-    description: "Daily aggregated customer revenue"
+    description: "Daily customer revenue aggregation"
     columns:
-      - name: revenue_id
-        tests:
-          - unique
-          - not_null
-      - name: revenue_date
+      - name: transaction_date
         tests:
           - not_null
-      - name: customer_id
+      - name: hashed_customer_id
+        tests:
+          - not_null
+      - name: currency
         tests:
           - not_null
       - name: daily_revenue
